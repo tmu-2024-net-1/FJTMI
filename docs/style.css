@@ -1,0 +1,39 @@
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+header {
+  width: 100%;
+  background-color: #787878;
+  color: white;
+  padding: 0.01em 1em;
+  margin: 0;
+}
+.canvases{
+    display: flex;
+    justify-content: center;
+    margin: 2em auto;
+    width:900px;
+    height:550px;
+    background-color: rgb(241, 229, 216);
+}
+.canvas{
+    margin: auto;
+    position: absolute;
+    width:900px;
+    height:550px;
+}
+#mark {
+  border: 2px solid black;
+}
+#document {
+    background-color: rgb(233, 225, 239);
+    scale: 1;
+}
+#content {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
