@@ -10,10 +10,19 @@ header {
   padding: 0.01em 1em;
   margin: 0;
 }
+main{
+  margin: 0 auto;
+  width:1000px;
+}
+#zoom{
+  display: flex;
+  margin: 1.5em 3em;
+  margin-bottom: 0;
+}
 .canvases{
     display: flex;
     justify-content: center;
-    margin: 2em auto;
+    margin: 0.5em auto;
     width:900px;
     height:550px;
     background-color: rgb(241, 229, 216);
@@ -25,7 +34,7 @@ header {
     height:550px;
 }
 #mark {
-  border: 2px solid black;
+  border: 1px solid rgb(115, 115, 115);
 }
 #document {
     background-color: rgb(233, 225, 239);
