@@ -1,6 +1,7 @@
+/*
 onload = function() {
-  marktool();
-};
+  //marktool();
+};*/
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 初期設定
   const fSize = 150;
-  let scale = 1;
+  let scale = 0.9;
   const lines = [
     '止',
     '私が両手をひろげても、お空はちっとも飛べないが、飛べる小鳥は私のように、地面を速くは走れない。',
@@ -37,26 +38,31 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   let basePos = {
-    x:300,
-    y:150
+    x:-canvas.width / 2,
+    y:-canvas.height / 2
   }
 
   let textPos = {
-    x:500,
-    y:500
+    x:500-canvas.width / 2,
+    y:500-canvas.height / 2
   }
 
   let Fpos = null;
   let move = false;
 
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+
+  // 記録用の配列
+  let memorize = [];
+
   // Canvasに文章を描画する関数
   function drawText() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     ctx.save();  // コンテキストの状態を保存
     ctx.scale(scale, scale);
 
     ctx.fillStyle = 'white';
-    ctx.fillRect(basePos.x+Mpos.x, basePos.y+Mpos.y, 8400, 5000);  // 四角形の中を白で塗りつぶす
+    ctx.fillRect(basePos.x+Mpos.x, basePos.y+Mpos.y, canvas.width, canvas.height);  // 四角形の中を白で塗りつぶす
 
     ctx.font = `${fSize}px Roboto`;  // スケールはすでに適用されているので、fSizeのみにする
     ctx.fillStyle = 'black';
@@ -70,13 +76,37 @@ document.addEventListener('DOMContentLoaded', function() {
   //拡大移動
   const markCanvas = document.getElementById('mark');
 
+  //記録
+  let spaceCount = 0;
+
+  document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+      // スペースキーが押された時の処理
+      spaceCount++;
+    }
+  });
+
+  
+  function recordState() {
+    memorize.push({
+      scale: scale,
+      x: basePos.x + Mpos.x, 
+      y: basePos.y + Mpos.y 
+    });
+  }
+
+  
+
   //拡大
   markCanvas.addEventListener('wheel', function(event) {
     event.preventDefault();
     scale += event.deltaY * -0.001;
     scale = Math.min(Math.max(0.5, scale), 5); // 最小値0.5、最大値2に制限
+
     zoom.innerHTML = `拡大率　×${scale.toFixed(2)}`;
+
     drawText();
+    recordState();
   }); 
 
   //移動
@@ -100,10 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
       let Pos = getMousePos(markCanvas, event);
       Mpos = {
         x:(Pos.x - Fpos.x)*5,
-      y:(Pos.y - Fpos.y)*5
+        y:(Pos.y - Fpos.y)*5
       }
       lines[4] = `移動中 x:${Mpos.x} y:${Mpos.y}`; 
+
       drawText();
+      recordState();
     }
   }, {passive: false});
 
@@ -126,11 +158,17 @@ document.addEventListener('DOMContentLoaded', function() {
     Mpos = { x: 0, y: 0 };
 
     drawText();
+    recordState();
   }, {passive: false});
 
 
   // 初期設定で描画
   drawText();
+
+
+  console.log('History:', memorize);
+
+  recordState();
 
 });
 
@@ -144,7 +182,7 @@ function marktool() {
     return false;
   }
   var ctxmark = markcanvas.getContext('2d');
-  var rectSize = 50;
+  var rectSize =50;
   var rectangles = [];
 
   function drawRectangle(x, y) {
@@ -163,16 +201,6 @@ function marktool() {
       y: evt.clientY - rect.top
     };
   }
-
-  /*
-  function getTouchPos(canvas, touch) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: touch.clientX - rect.left,
-      y: touch.clientY - rect.top
-    };
-  }
-  */
 
   function updateRectanglePosition(evt) {
     let pos;

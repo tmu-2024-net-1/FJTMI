@@ -14,7 +14,7 @@ main{
   margin: 0 auto;
   width:1000px;
 }
-#zoom{
+.zoom{
   display: flex;
   margin: 1.5em 3em;
   margin-bottom: 0;
