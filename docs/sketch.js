@@ -51,6 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   ctx.translate(canvas.width / 2, canvas.height / 2);
 
+  //拡大移動
+  const markCanvas = document.getElementById('mark'); 
+  var ctxmark = markCanvas.getContext('2d');
+
+
+
   // 記録用の配列
   let memorize = [];
 
@@ -81,6 +87,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
       scale = 0.9;
       drawText();
+
+      //drawRectangle( markCanvas.width / 2,  markCanvas.height / 2);
+
+
+      for(let i = 0; i < memorize.length; i++){
+        drawRectangle( ( memorize[i].x) / 10 +markCanvas.width,  (memorize[i].y) / 10 +markCanvas.height);
+      }
     }
   });
 
@@ -108,8 +121,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 1000);
 
-  //拡大移動
-  const markCanvas = document.getElementById('mark'); 
+//マーク
+  function drawRectangle(x, y) {
+    ctxmark.beginPath();
+    ctxmark.rect(x - 50 / 2, y - 50 / 2, 50, 50);
+    ctxmark.strokeStyle = 'black';
+    ctxmark.lineWidth = 2;
+    ctxmark.stroke();
+    ctxmark.closePath();
+  }
+
+
 
   //拡大
   markCanvas.addEventListener('wheel', function(event) {
