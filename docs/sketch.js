@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const zoom = document.getElementById('zoom');
   
   // 初期設定
-  const fSize = 150;
   let scale = 0.9;
   const lines = [
     '止',
@@ -55,6 +54,36 @@ document.addEventListener('DOMContentLoaded', function() {
   // 記録用の配列
   let memorize = [];
 
+  function recordState() {
+    memorize.push({
+      scale: scale,
+      x: basePos.x + Mpos.x, 
+      y: basePos.y + Mpos.y 
+    });
+  }
+
+  let stop = false;
+
+  document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+      // スペースキーが押された時の処理
+      stop = true;
+
+      basePos = {
+        x:-canvas.width / 2,
+        y:-canvas.height / 2
+      }
+    
+      textPos = {
+        x:500-canvas.width / 2,
+        y:500-canvas.height / 2
+      }
+    
+      scale = 0.9;
+      drawText();
+    }
+  });
+
   // Canvasに文章を描画する関数
   function drawText() {
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
@@ -64,50 +93,34 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.fillStyle = 'white';
     ctx.fillRect(basePos.x+Mpos.x, basePos.y+Mpos.y, canvas.width, canvas.height);  // 四角形の中を白で塗りつぶす
 
-    ctx.font = `${fSize}px Roboto`;  // スケールはすでに適用されているので、fSizeのみにする
+    ctx.font = `150px Roboto`;  // スケールはすでに適用されているので、fSizeのみにする
     ctx.fillStyle = 'black';
     lines.forEach((line, index) => {
-      ctx.fillText(line, textPos.x+Mpos.x, textPos.y + fSize * index * 2+Mpos.y);
+      ctx.fillText(line, textPos.x+Mpos.x, textPos.y + 150 * index * 2+Mpos.y);
       //ctx.fillText(line, 500 / scale, (500 + fSize * index * 2) / scale);
     });
     ctx.restore();  // コンテキストの状態を元に戻す
   }
 
-  //拡大移動
-  const markCanvas = document.getElementById('mark');
-
-  //記録
-  let spaceCount = 0;
-
-  document.addEventListener('keydown', function(event) {
-    if (event.code === 'Space') {
-      // スペースキーが押された時の処理
-      spaceCount++;
+  setInterval(function() {
+    if (!stop) {
+      recordState();
     }
-  });
+  }, 1000);
 
-  
-  function recordState() {
-    memorize.push({
-      scale: scale,
-      x: basePos.x + Mpos.x, 
-      y: basePos.y + Mpos.y 
-    });
-  }
-
-  
+  //拡大移動
+  const markCanvas = document.getElementById('mark'); 
 
   //拡大
   markCanvas.addEventListener('wheel', function(event) {
     event.preventDefault();
     scale += event.deltaY * -0.001;
-    scale = Math.min(Math.max(0.5, scale), 5); // 最小値0.5、最大値2に制限
-
+    scale = Math.min(Math.max(0.5, scale), 5); // 最小値0.5、最大値5に制限
+  
     zoom.innerHTML = `拡大率　×${scale.toFixed(2)}`;
-
-    drawText();
-    recordState();
-  }); 
+  
+    drawText();  // スケールの更新後に描画を更新
+  });
 
   //移動
   function getMousePos(canvas, evt) {
@@ -135,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
       lines[4] = `移動中 x:${Mpos.x} y:${Mpos.y}`; 
 
       drawText();
-      recordState();
+
     }
   }, {passive: false});
 
@@ -158,17 +171,18 @@ document.addEventListener('DOMContentLoaded', function() {
     Mpos = { x: 0, y: 0 };
 
     drawText();
-    recordState();
+
   }, {passive: false});
+
 
 
   // 初期設定で描画
   drawText();
 
 
+
   console.log('History:', memorize);
 
-  recordState();
 
 });
 
