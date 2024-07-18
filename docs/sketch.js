@@ -88,30 +88,16 @@ document.addEventListener('DOMContentLoaded', function() {
       scale = 0.9;
       drawText();
 
-      //drawRectangle(450,  275);//中心
-      //drawRectangle(45,  27.5);//左上(-0.5,-0.10)
-      //drawRectangle(900-45,  550-27.5);//右下(-899.5, -548.0)
-
-      //x 左-0.5 -902.0紙の右
-      //45,855
-      //0~900
-
-      //y 上(0.5)-0.10 (-549.5 )-548.0紙の下
-      //27.5,522.5
-      //0~550
-
-      //drawRectangle(-450,  -275);//紙を中心
-      //drawRectangle(-900.0,  -549.0);//紙中心を左上
-      //-1397.0, -851.5 紙全体を左上
-      //drawRectangle(53.0,  -9.0);//紙を右下
-      //498.5, y: 304.0
 
 
       function mapRange(value, inMin, inMax, outMin, outMax) {
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
       }
 
+     
+
       for(let i = 0; i < memorize.length; i++){
+        scaleMark = memorize[i].scale/10;
         let newMemoX = mapRange(memorize[i].x, 0, -9000, 45, 855);
         let newMemoY = mapRange(memorize[i].y, 0, -5500, 27.5, 522.5);
         drawRectangle( newMemoX ,  newMemoY );
@@ -147,10 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //マーク
   function drawRectangle(x, y) {
+    let width = 900;
+    let height = 550;
+
+
     ctxmark.beginPath();
-    ctxmark.rect(x - 50 / 2, y - 50 / 2, 50, 50);
+    ctxmark.rect(x - width*scaleMark / 2, y - height*scaleMark / 2, width*scaleMark, height*scaleMark);
     ctxmark.strokeStyle = 'black';
-    ctxmark.lineWidth = 2;
+    ctxmark.lineWidth = 1*scaleMark;
     ctxmark.stroke();
     ctxmark.closePath();
   }
