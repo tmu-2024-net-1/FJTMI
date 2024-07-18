@@ -94,13 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
       }
 
+      //drawRectangle( markCanvas.width/2 ,   markCanvas.height/2 ,0.9);
      
 
       for(let i = 0; i < memorize.length; i++){
-        scaleMark = memorize[i].scale/10;
+        let scaleMark = 0.9*0.9/memorize[i].scale;
         let newMemoX = mapRange(memorize[i].x, 0, -9000, 45, 855);
         let newMemoY = mapRange(memorize[i].y, 0, -5500, 27.5, 522.5);
-        drawRectangle( newMemoX ,  newMemoY );
+        drawRectangle( newMemoX ,  newMemoY ,scaleMark);
       }
 
     }
@@ -132,15 +133,14 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 100);
 
 //マーク
-  function drawRectangle(x, y) {
+  function drawRectangle(x, y, scale) {
     let width = 900;
     let height = 550;
 
-
     ctxmark.beginPath();
-    ctxmark.rect(x - width*scaleMark / 2, y - height*scaleMark / 2, width*scaleMark, height*scaleMark);
+    ctxmark.rect(x - width*scale / 2, y - height*scale / 2, width*scale, height*scale);
     ctxmark.strokeStyle = 'black';
-    ctxmark.lineWidth = 1*scaleMark;
+    ctxmark.lineWidth = 1*scale;
     ctxmark.stroke();
     ctxmark.closePath();
   }
