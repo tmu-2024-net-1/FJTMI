@@ -88,12 +88,35 @@ document.addEventListener('DOMContentLoaded', function() {
       scale = 0.9;
       drawText();
 
-      //drawRectangle( markCanvas.width / 2,  markCanvas.height / 2);
+      //drawRectangle(450,  275);//中心
+      //drawRectangle(45,  27.5);//左上(-0.5,-0.10)
+      //drawRectangle(900-45,  550-27.5);//右下(-899.5, -548.0)
 
+      //x 左-0.5 -902.0紙の右
+      //45,855
+      //0~900
+
+      //y 上(0.5)-0.10 (-549.5 )-548.0紙の下
+      //27.5,522.5
+      //0~550
+
+      //drawRectangle(-450,  -275);//紙を中心
+      //drawRectangle(-900.0,  -549.0);//紙中心を左上
+      //-1397.0, -851.5 紙全体を左上
+      //drawRectangle(53.0,  -9.0);//紙を右下
+      //498.5, y: 304.0
+
+
+      function mapRange(value, inMin, inMax, outMin, outMax) {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+      }
 
       for(let i = 0; i < memorize.length; i++){
-        drawRectangle( ( memorize[i].x) / 10 +markCanvas.width,  (memorize[i].y) / 10 +markCanvas.height);
+        let newMemoX = mapRange(memorize[i].x, 0, -9000, 45, 855);
+        let newMemoY = mapRange(memorize[i].y, 0, -5500, 27.5, 522.5);
+        drawRectangle( newMemoX ,  newMemoY );
       }
+
     }
   });
 
@@ -113,13 +136,14 @@ document.addEventListener('DOMContentLoaded', function() {
       //ctx.fillText(line, 500 / scale, (500 + fSize * index * 2) / scale);
     });
     ctx.restore();  // コンテキストの状態を元に戻す
+
   }
 
   setInterval(function() {
     if (!stop) {
       recordState();
     }
-  }, 1000);
+  }, 100);
 
 //マーク
   function drawRectangle(x, y) {
