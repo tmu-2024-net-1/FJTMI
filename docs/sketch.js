@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var ctxmark = markCanvas.getContext('2d');
 
 
-
   // 記録用の配列
   let memorize = [];
 
@@ -68,12 +67,53 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  //記録終了
   let stop = false;
+  let i = 0;
+
+  function mapRange(value, inMin, inMax, outMin, outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+  }
+
+  //マーク
+  function drawRectangle(x, y, scale) {
+    let width = 900;
+    let height = 550;
+
+    ctxmark.beginPath();
+    ctxmark.rect(x - width*scale / 2, y - height*scale / 2, width*scale, height*scale);
+    ctxmark.strokeStyle = 'rgba(255, 150, 0, 0.6)';
+    ctxmark.lineWidth = 1;
+    ctxmark.stroke();
+    ctxmark.closePath();
+  }
+
+  function mapRange(value, inMin, inMax, outMin, outMax) {
+    return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+  }
+
+  let drawInterval = null;
+
+  function startDrawing() {
+    let index = 0;
+    drawInterval = setInterval(function() {
+      if (index < memorize.length) {
+        let scaleMark = 0.9 * 0.9 / memorize[index].scale;
+        let newMemoX = mapRange(memorize[index].x, 0, -9000, 45, 855);
+        let newMemoY = mapRange(memorize[index].y, 0, -5500, 27.5, 522.5);
+        drawRectangle(newMemoX, newMemoY, scaleMark);
+        index++;
+      } else {
+        clearInterval(drawInterval); // 描画が終了したらタイマーをクリア
+      }
+    }, 10000/memorize.length); // 1秒ごとに描画
+  }
 
   document.addEventListener('keydown', function(event) {
     if (event.code === 'Space') {
       // スペースキーが押された時の処理
       stop = true;
+      //i = 0;
 
       basePos = {
         x:-canvas.width / 2,
@@ -86,29 +126,25 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     
       scale = 0.9;
-      drawText();
 
+      zoom.innerHTML = `拡大率　×1.00`;
 
-
-      function mapRange(value, inMin, inMax, outMin, outMax) {
-        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-      }
-
-      //drawRectangle( markCanvas.width/2 ,   markCanvas.height/2 ,0.9);
-     
-
+      //グレーにする
+      drawText('rgba(0, 0, 0, 0.25)');
+/*
       for(let i = 0; i < memorize.length; i++){
         let scaleMark = 0.9*0.9/memorize[i].scale;
         let newMemoX = mapRange(memorize[i].x, 0, -9000, 45, 855);
         let newMemoY = mapRange(memorize[i].y, 0, -5500, 27.5, 522.5);
         drawRectangle( newMemoX ,  newMemoY ,scaleMark);
-      }
+      }*/
 
+      startDrawing(); 
     }
   });
 
   // Canvasに文章を描画する関数
-  function drawText() {
+  function drawText(color = 'rgba(0, 0, 0, 1)') {
     ctx.clearRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
     ctx.save();  // コンテキストの状態を保存
     ctx.scale(scale, scale);
@@ -117,13 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
     ctx.fillRect(basePos.x+Mpos.x, basePos.y+Mpos.y, canvas.width, canvas.height);  // 四角形の中を白で塗りつぶす
 
     ctx.font = `150px Roboto`;  // スケールはすでに適用されているので、fSizeのみにする
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = color; //'black'
     lines.forEach((line, index) => {
       ctx.fillText(line, textPos.x+Mpos.x, textPos.y + 150 * index * 2+Mpos.y);
       //ctx.fillText(line, 500 / scale, (500 + fSize * index * 2) / scale);
     });
     ctx.restore();  // コンテキストの状態を元に戻す
-
   }
 
   setInterval(function() {
@@ -132,31 +167,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 100);
 
-//マーク
-  function drawRectangle(x, y, scale) {
-    let width = 900;
-    let height = 550;
-
-    ctxmark.beginPath();
-    ctxmark.rect(x - width*scale / 2, y - height*scale / 2, width*scale, height*scale);
-    ctxmark.strokeStyle = 'black';
-    ctxmark.lineWidth = 1*scale;
-    ctxmark.stroke();
-    ctxmark.closePath();
-  }
-
 
 
   //拡大
+
   markCanvas.addEventListener('wheel', function(event) {
-    event.preventDefault();
-    scale += event.deltaY * -0.001;
-    scale = Math.min(Math.max(0.5, scale), 5); // 最小値0.5、最大値5に制限
-  
-    zoom.innerHTML = `拡大率　×${scale.toFixed(2)}`;
-  
-    drawText();  // スケールの更新後に描画を更新
-  });
+    if(stop == false){
+      event.preventDefault();
+      scale += event.deltaY * -0.001;
+      scale = Math.min(Math.max(0.5, scale), 5); // 最小値0.5、最大値5に制限
+    
+      zoom.innerHTML = `記録中…　　拡大率 ×${scale.toFixed(2)}`;
+    
+      drawText();  // スケールの更新後に描画を更新
+      
+    }
+});
 
   //移動
   function getMousePos(canvas, evt) {
@@ -164,37 +190,37 @@ document.addEventListener('DOMContentLoaded', function() {
     return {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top
-    };
+    }; 
   }
 
   markCanvas.addEventListener('mousedown', function(event) {
+    if(stop == false){
     Fpos = getMousePos(markCanvas, event);
-    lines[4] = `タッチ開始 x:${Fpos.x} y:${Fpos.y}`; 
     move = true;
     drawText();
+    }
   }, {passive: false});
 
   markCanvas.addEventListener('mousemove', function(event) {
+    if(stop == false){
     if(move == true){
       let Pos = getMousePos(markCanvas, event);
       Mpos = {
         x:(Pos.x - Fpos.x)*5,
         y:(Pos.y - Fpos.y)*5
       }
-      lines[4] = `移動中 x:${Mpos.x} y:${Mpos.y}`; 
-
       drawText();
-
+    }
     }
   }, {passive: false});
 
   markCanvas.addEventListener('mouseup', function(event) {
+    if(stop == false){
     let Upos = getMousePos(markCanvas, event);
     Mpos = {
       x:(Upos.x - Fpos.x)*5,
       y:(Upos.y - Fpos.y)*5
-    }
-    lines[4] = `移動後 x:${Mpos.x} y:${Mpos.y}`; 
+    } 
     move = false;
 
     // 基準点を更新
@@ -207,8 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
     Mpos = { x: 0, y: 0 };
 
     drawText();
-
+    }
   }, {passive: false});
+  
 
 
 
@@ -222,55 +249,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-
-//contextの拡大
-//マウス位置取得、再現
-
-function marktool() {
-  var markcanvas = document.getElementById('mark');
-  if (!markcanvas || !markcanvas.getContext) {
-    return false;
-  }
-  var ctxmark = markcanvas.getContext('2d');
-  var rectSize =50;
-  var rectangles = [];
-
-  function drawRectangle(x, y) {
-    ctxmark.beginPath();
-    ctxmark.rect(x - rectSize / 2, y - rectSize / 2, rectSize, rectSize);
-    ctxmark.strokeStyle = 'black';
-    ctxmark.lineWidth = 2;
-    ctxmark.stroke();
-    ctxmark.closePath();
-  }
-
-  function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
-    };
-  }
-
-  function updateRectanglePosition(evt) {
-    let pos;
-    if (evt.type.includes('touch')) {
-      //pos = getTouchPos(markcanvas, evt.touches[0]);
-    } else {
-      pos = getMousePos(markcanvas, evt);
-    }
-    rectangles.push(pos);
-    ctxmark.clearRect(0, 0, markcanvas.width, markcanvas.height); // キャンバスをクリア
-    rectangles.forEach(rect => drawRectangle(rect.x, rect.y));
-  }
-
-  // イベントリスナーを追加
-  markcanvas.addEventListener('mousemove', updateRectanglePosition, { passive: false });
-  markcanvas.addEventListener('touchmove', updateRectanglePosition, { passive: false });
-
-  // 初期状態としてキャンバス中央に四角形を描画
-  var rectcan = markcanvas.getBoundingClientRect();
-  var initialPos = { x: rectcan.width / 2, y: rectcan.height / 2 };
-  rectangles.push(initialPos);
-  drawRectangle(initialPos.x, initialPos.y);
-}

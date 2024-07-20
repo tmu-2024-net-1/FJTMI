@@ -3,12 +3,16 @@ body {
   margin: 0;
   overflow: hidden;
 }
-header {
+header, footer {
   width: 100%;
   background-color: #787878;
   color: white;
   padding: 0.01em 1em;
   margin: 0;
+}
+h3{
+  margin: 0.7em 0.5em;
+
 }
 main{
   margin: 0 auto;
@@ -16,7 +20,7 @@ main{
 }
 .zoom{
   display: flex;
-  margin: 1.5em 3em;
+  margin: 1em 3em;
   margin-bottom: 0;
 }
 .canvases{
@@ -37,7 +41,7 @@ main{
   border: 1px solid rgb(115, 115, 115);
 }
 #document {
-    background-color: rgb(233, 225, 239);
+    background-color: rgb(230, 230, 230);
     scale: 1;
 }
 #content {
@@ -45,4 +49,12 @@ main{
   justify-content: center;
   position: relative;
   z-index: 1;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+}
+footer p {
+  margin: 0.6em;
+  font-size: 90%;
 }
