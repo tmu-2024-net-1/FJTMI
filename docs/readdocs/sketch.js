@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     'あいうえお　かきくけこ　さしすせそ　たちつてと　なにぬねの　はひふへほ　まみむめも　やゆよ　らりるれろ',
     'あいうえお　かきくけこ　さしすせそ　たちつてと　なにぬねの　はひふへほ　まみむめも　やゆよ　らりるれろ'
     ],
-    
+
     [
     '東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東',
     '東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東',   
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         zoom.innerHTML = `再現中…`;
       } else {
         clearInterval(drawInterval); // 描画が終了したらタイマーをクリア
-        zoom.innerHTML = `完成！`;
+        zoom.innerHTML = '完成！　　   　　　　　　　　　　　　　　　　　　　　　　　　　　              　　　　　　　　　　　　　　　　　　<a href="../index.html">ホームに戻る</a>'
       }
     }, Inter); // 1秒ごとに描画
   }

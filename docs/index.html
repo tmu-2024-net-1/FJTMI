@@ -57,12 +57,17 @@
     color: black;
     }
     .button:hover{
-        border: 1px solid #000;
+        border: 1px solid #a78a77;
     }
     .button h3{
     margin: 2em 0;
+    margin-bottom: 0;
     text-align: center;
     font-family: 'Times New Roman', serif; 
+    }
+    .button p{
+        margin-top: 0.75em;
+        font-size: 65%;
     }
 
     .overlay {
@@ -71,8 +76,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80%;
-      height: 80%;
+      width: 75%;
+      height: 75%;
       margin: 1em auto;
       background: rgb(255, 255, 255);
       border: 1px solid #a78a77;
@@ -106,6 +111,9 @@
     color: black;
     border-radius: 0.5em;
     }
+    .overbutton:hover{
+        border: 1px solid #a78a77;
+    }
   </style>
 </head>
 
@@ -126,9 +134,9 @@
     </div>
 
 
-    <p class = select>読む文書を選んでください</p>
+    <p class = select>はじめに、ベースとなる文書を選んでください</p>
     <div class = "buttons">
-        <a href="readdocs/index.html?type=1" class="button"><h3>1.間違い漢字探し</h3></a>
+        <a href="readdocs/index.html?type=1" class="button"><h3>1.間違い漢字探し</h3><p>たくさんの「東」の中に一つだけ「束」があります</p></a>
         <a href="readdocs/index.html?type=2" class="button"><h3>2.吾輩は猫である　冒頭</h3></a>
         <a href="readdocs/index.html?type=3" class="button"><h3>3.金子みすゞ　詩三選</h3></a>
     </div>
@@ -142,16 +150,17 @@
 <div class = overlay id = overlay>
     <div class="overcontent">
         <h4>操作説明</h4>
-        <p>拡大・縮小：文書の上でスクロール</p>
-        <p>移動：文書の上を左クリック+移動</p>
+        <p>拡大・縮小 ： 文書の上でスクロール</p>
+        <p>移動 ： 文書の上を左クリック+移動</p>
+        <p>終了・再現の開始 ： スペースキー</p>
         <p>制限時間はありません。好きなタイミングで終了してください。</p>
-        <p>終了時にスペースキーを押すと、約10秒かけて記録が表示されます。</p>
+        <p>記録の可視化は約10秒かかります。</p>
         <p>読み直すときは再読み込みしてください。</p>
         <p>　　　　</p>
         <p>これから文書を読み始めます。開始を押すと記録が始まります。</p>
         <div class = "overbuttons">
         <a href="#" id="startButton" class="overbutton">開始</a>
-        <a href="#" id="cancelButton" class="overbutton">メニューに戻る</a>
+        <a href="#" id="cancelButton" class="overbutton">ホームに戻る</a>
         </div>
     </div>
 </div>
@@ -162,7 +171,7 @@
       const buttons = document.querySelectorAll('.button');
       const overlay = document.getElementById('overlay');
       const startButton = document.getElementById('startButton');
-      const cancelButton = document.getElementById('canselButton');
+      const cancelButton = document.getElementById('cancelButton');
       let targetUrl = '';
 
       buttons.forEach(button => {

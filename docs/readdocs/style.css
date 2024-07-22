@@ -21,6 +21,9 @@ main{
 p{
   font-family: 'Times New Roman', serif; 
 }
+a{
+  color: black;
+}
 .zoom{
   display: flex;
   margin: 1em 3em;
