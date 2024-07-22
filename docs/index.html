@@ -3,35 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <title>Canvas Overlay Example</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="readdocs/style.css">
+  <style>
+    p, a{
+      font-family: 'Times New Roman', serif; 
+    }
+    .prologue{
+    margin: 3em auto;
+    text-align: center;
+    }
+    .prologue p{
+    text-align: center;
+    margin: 3em auto;
+    margin-bottom: 2em;
+    width: 79%;
+    }
+    .sample{
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    margin: 3em auto;
+    }
+    .sample p{
+    width:30%;
+    text-align: end;
+    margin: 3em 0;
+    margin-right: 0em;
+    }
+    img{
+    width: 30%;
+    height:auto;
+    margin: 0em 2.5em;
+    }
+    .select{
+    margin: 1em auto;
+    margin-bottom: 1.5em;
+    text-align: center;
+    width: 79%;
+    }
+    .buttons{
+    display: flex;
+    justify-content: space-between; /* 均等に並べる */
+    width: 80%; /* コンテナの幅を設定 */
+    margin: 0em auto; /* 中央寄せ */
+    }
+    .button{
+    justify-content: space-around;
+    margin: 0 1em;
+    background-color: rgb(234, 228, 224);
+    padding: 15px;
+    width: 80%;
+    text-decoration: none; /* リンクの下線を削除 */
+    color: black;
+    }
+    .button:hover{
+        border: 1px solid #000;
+    }
+    .button h3{
+    margin: 2em 0;
+    text-align: center;
+    font-family: 'Times New Roman', serif; 
+    }
+
+    .overlay {
+      display: none;/*none*/
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      margin: 1em auto;
+      background: rgb(255, 255, 255);
+      border: 1px solid #a78a77;
+      border-radius: 1.5em;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .overlay-content {
+      background: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h4{
+        font-family: 'Times New Roman', serif; 
+    }
+    .overbuttons{
+    display: flex;
+    justify-content: space-between; /* 均等に並べる */
+    width: 100%; /* コンテナの幅を設定 */
+    margin: 0em auto; /* 中央寄せ */
+    }
+    .overbutton{
+    justify-content: space-around;
+    text-align: center;
+    margin: 0em 2em;
+    background-color: rgb(234, 228, 224);
+    padding: 15px;
+    width: 80%;
+    text-decoration: none; /* リンクの下線を削除 */
+    color: black;
+    border-radius: 0.5em;
+    }
+  </style>
 </head>
 
 <body>
   <header>
-    <h3>HeatMap</h3>
+    <h3>私の読見方（よみかた）</h3>
   </header>
 
 <main>
-  
-  <p class = zoom id = zoom>記録中…　　拡大率 ×1.00</p>
+    <div class = prologue>
+    <p>Web上の文書を見たり読んだりするとき、視点の移動に加えて、見やすいように
+        画面の拡大、移動することはありませんか？</p>
+    <p>そんな、紙の本を読むときとは少し違う、デジタルコンテンツの見方を可視化してみるサイトです。  
+    </p>
+    <div class = sample>
+    <p>こんな感じになります→</p>
+    <img src="photo/sample.png" alt="sample">
+    </div>
 
-  <div class = "canvases">
-    <canvas id="document" class = "canvas"width="9000" height="5500" ></canvas>
-    <canvas id="mark" class = "canvas" width="900" height="550"></canvas>
-  </div>
-<!--
-  <p class = zoom>データ</p>
-  <p class = zoom>データ</p>
-  <p class = zoom>データ</p>
-  <p class = zoom>データ</p>
-  <p class = zoom>データ</p>
--->
+
+    <p class = select>読む文書を選んでください</p>
+    <div class = "buttons">
+        <a href="readdocs/index.html?type=1" class="button"><h3>1.間違い漢字探し</h3></a>
+        <a href="readdocs/index.html?type=2" class="button"><h3>2.吾輩は猫である　冒頭</h3></a>
+        <a href="readdocs/index.html?type=3" class="button"><h3>3.金子みすゞ　詩三選</h3></a>
+    </div>
+
 </main>
 
 <footer>
   <p>2024.7</p>
 </footer>
 
+<div class = overlay id = overlay>
+    <div class="overcontent">
+        <h4>操作説明</h4>
+        <p>拡大・縮小：文書の上でスクロール</p>
+        <p>移動：文書の上を左クリック+移動</p>
+        <p>制限時間はありません。好きなタイミングで終了してください。</p>
+        <p>終了時にスペースキーを押すと、約10秒かけて記録が表示されます。</p>
+        <p>読み直すときは再読み込みしてください。</p>
+        <p>　　　　</p>
+        <p>これから文書を読み始めます。開始を押すと記録が始まります。</p>
+        <div class = "overbuttons">
+        <a href="#" id="startButton" class="overbutton">開始</a>
+        <a href="#" id="cancelButton" class="overbutton">メニューに戻る</a>
+        </div>
+    </div>
+</div>
+
   <script src="sketch.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.button');
+      const overlay = document.getElementById('overlay');
+      const startButton = document.getElementById('startButton');
+      const cancelButton = document.getElementById('canselButton');
+      let targetUrl = '';
+
+      buttons.forEach(button => {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          targetUrl = this.href;
+          overlay.style.display = 'flex';
+        });
+      });
+
+      startButton.addEventListener('click', function() {
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        }
+      });
+
+      cancelButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        overlay.style.display = 'none';
+        targetUrl = '';
+      });
+    });
+  </script>
 </body>
 </html>
+
+<!--
+様々な文書を web サイト上で閲覧できる今日、 
+閲覧するデバイスも表示も様々で、見やすい大きさに拡大、移動することもある。
+そんな、本を読む視点移動とは少し違う、ピンチインなどのアクションが加わった
+デジタルコンテンツの読み方、見方を記録して、文書の上に可視化することで、
+新しい視点でどうデバイスを扱っているのかを感じたり、一つのグラフィック作品のように
+なる様子を楽しめる Web サイト。-->
