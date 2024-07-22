@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     'あいうえお　かきくけこ　さしすせそ　たちつてと　なにぬねの　はひふへほ　まみむめも　やゆよ　らりるれろ',
     'あいうえお　かきくけこ　さしすせそ　たちつてと　なにぬねの　はひふへほ　まみむめも　やゆよ　らりるれろ'
     ],
+    
     [
     '東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東',
     '東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東　東',   
@@ -214,8 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     ctx.fillStyle = 'white';
     ctx.fillRect(basePos.x+Mpos.x, basePos.y+Mpos.y, canvas.width, canvas.height);  // 四角形の中を白で塗りつぶす
-
-    ctx.font = `150px "Times New Roman", serif`;  // スケールはすでに適用されているので、fSizeのみにする
+//150
+    ctx.font = `500px "Times New Roman", serif`;  
     ctx.fillStyle = color; //'black'
     lines[type].forEach((line, index) => {
       if(type == 3 && index == 0){
