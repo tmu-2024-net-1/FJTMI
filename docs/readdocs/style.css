@@ -9,6 +9,12 @@ header, footer {
   color: white;
   padding: 0.01em 1em;
   margin: 0;
+  position: relative;
+  z-index: 5;
+}
+header a{
+  color: white;
+  text-decoration: none;
 }
 h3{
   margin: 0.7em 0.5em;
